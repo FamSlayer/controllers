@@ -45,7 +45,7 @@ protected int receptiveFieldHeight;
 // values of these variables could be changed during the Agent-Environment interaction.
 // Use them to get more detailed or less detailed description of the level.
 // for information see documentation for the benchmark <link: marioai.org/marioaibenchmark/zLevels
-int zLevelScene = 1;
+int zLevelScene = 0;
 int zLevelEnemies = 0;
 
 
@@ -116,6 +116,15 @@ public int getReceptiveFieldCellValue(int x, int y)
 
     return levelScene[x][y];
 }
+
+public int getEnemyFieldCellValue(int x, int y)
+{
+    if (x < 0 || x >= enemies.length || y < 0 || y >= enemies[0].length)
+        return 0;
+
+    return enemies[x][y];
+}
+
 
 //    public void integrateObservation(int[] serializedLevelSceneObservationZ, int[] serializedEnemiesObservationZ, float[] marioFloatPos, float[] enemiesFloatPos, int[] marioState)
 //    {

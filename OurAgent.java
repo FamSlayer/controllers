@@ -6,10 +6,12 @@ import ch.idsia.benchmark.mario.engine.sprites.Mario;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.benchmark.mario.environments.MarioEnvironment;
 
+
 public class OurAgent extends BasicMarioAIAgent implements Agent
 {
 int trueJumpCounter = 0;
 int trueSpeedCounter = 0;
+int trueCounter = 0;
 //private MarioEnvironment _environment;
 
 public OurAgent()
@@ -93,10 +95,29 @@ private boolean enemyNear(){
 public boolean[] getAction()
 {
     // this Agent requires observation integrated in advance.
-
-    if (getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 2) != 0 ||
-            getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 1) != 0 ||
-            DangerOfGap())
+	//byte[][] scene = _environment.getLevelSceneObservationZ(1);
+	//byte[][] enemies = _environment.getEnemiesObservationZ(1);
+	
+	//System.out.printf(getName(), levelScene)
+	//System.out.printf("GRFCV returns: %d\n", getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 2));
+	trueCounter++;
+	int one_ahead_l = getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 1);
+	int two_ahead_l = getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 2);
+	//int three_ahead = getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 3);
+	
+	int one_ahead_e = getEnemyFieldCellValue(marioCenter[0], marioCenter[1] + 1);
+	int two_ahead_e = getEnemyFieldCellValue(marioCenter[0], marioCenter[1] + 2);
+	
+	
+	if (one_ahead_e != 0 || two_ahead_e != 0 )
+		System.out.printf("one: %d\ttwo: %d\n", one_ahead_e, two_ahead_e);
+	
+	//System.out.printf(format, args)
+	
+	if (one_ahead_l != 0 || two_ahead_l != 0 || 
+			one_ahead_e != 0 || one_ahead_e != 25 ||
+			two_ahead_e != 0 || two_ahead_e != 25
+			|| DangerOfGap())
     {
         if (isMarioAbleToJump || (!isMarioOnGround && action[Mario.KEY_JUMP]))
         {
@@ -121,7 +142,8 @@ public boolean[] getAction()
     }
 
     //action[Mario.KEY_SPEED] = DangerOfGap();
-    action[Mario.KEY_SPEED] =  !action[Mario.KEY_SPEED]; 
+    
+    action[Mario.KEY_SPEED] =  (trueCounter % 2) == 0; 
     
     action[Mario.KEY_RIGHT] = !(enemyNear());
     return action;
