@@ -138,10 +138,7 @@ public boolean[] getAction()
         action[Mario.KEY_JUMP] = false;
     }
     
-    //check if Mario is able to shoot
-    if(isMarioAbleToShoot){
-    	//shoot
-    }
+    
 
     //action[Mario.KEY_SPEED] = DangerOfGap();
     
@@ -149,16 +146,21 @@ public boolean[] getAction()
     
     action[Mario.KEY_RIGHT] = !(enemyNear());
     
-    if (enemyNear())
-    {
-    	action[Mario.KEY_LEFT] = true;
-    	System.out.printf("pressing left\n");
+  //check if Mario is able to shoot
+    if(isMarioAbleToShoot){
+    	if (enemyNear())
+        {
+        	action[Mario.KEY_LEFT] = true;
+        	System.out.printf("pressing left\n");
+        }
+        
+        else
+        {
+        	action[Mario.KEY_LEFT] = false;
+        	//System.out.printf("NOT pressing left\n");
+        }
     }
-    else
-    {
-    	action[Mario.KEY_LEFT] = false;
-    	//System.out.printf("NOT pressing left\n");
-    }
+    
     
     return action;
 }
