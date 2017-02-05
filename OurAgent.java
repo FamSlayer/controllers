@@ -23,7 +23,8 @@ public OurAgent()
 public void reset()
 {
     action = new boolean[Environment.numberOfButtons];
-    //action[Mario.KEY_RIGHT] = true;
+    action[Mario.KEY_RIGHT] = true;
+    action[Mario.KEY_LEFT] = false;
     action[Mario.KEY_SPEED] = true;
     trueJumpCounter = 0;
     trueSpeedCounter = 0;
@@ -68,9 +69,11 @@ private boolean DangerOfGap()
 //if there's an enemy within a certain range...
 private boolean enemyNear(byte[][] levelScene){
 	//byte[][] enemies = getEnemiesObservationZ(); 
+	int one_ahead_e = getEnemyFieldCellValue(marioCenter[0], marioCenter[1] + 1);
+	int two_ahead_e = getEnemyFieldCellValue(marioCenter[0], marioCenter[1] + 2);
 	
-	
-	return false;
+	return (one_ahead_e != 0 && one_ahead_e != 25) ||
+			(two_ahead_e != 0 && two_ahead_e != 25);
 }
 
 private boolean enemyNear(){
@@ -103,22 +106,21 @@ public boolean[] getAction()
 	trueCounter++;
 	int one_ahead_l = getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 1);
 	int two_ahead_l = getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 2);
+	System.out.printf("one_l: %d  two_l: %d\n", one_ahead_l, two_ahead_l);
 	//int three_ahead = getReceptiveFieldCellValue(marioCenter[0], marioCenter[1] + 3);
 	
 	int one_ahead_e = getEnemyFieldCellValue(marioCenter[0], marioCenter[1] + 1);
 	int two_ahead_e = getEnemyFieldCellValue(marioCenter[0], marioCenter[1] + 2);
 	
 	
-	if (one_ahead_e != 0 || two_ahead_e != 0 )
-		System.out.printf("one: %d\ttwo: %d\n", one_ahead_e, two_ahead_e);
-	
-	//System.out.printf(format, args)
-	
-	if (one_ahead_l != 0 || two_ahead_l != 0 || 
-			one_ahead_e != 0 || one_ahead_e != 25 ||
-			two_ahead_e != 0 || two_ahead_e != 25
-			|| DangerOfGap())
+	if ( (one_ahead_e != 0 && one_ahead_e != 25) ||
+			(two_ahead_e != 0 && two_ahead_e != 25) )
+		//System.out.printf(format, args)
+	if (one_ahead_l != 0 || two_ahead_l != 0)
+		System.out.printf("something DIRECTLY AHEAD\n");
+	if (one_ahead_l != 0 || two_ahead_l != 0 || DangerOfGap())
     {
+		System.out.printf("something in the way - going to jump\n");
         if (isMarioAbleToJump || (!isMarioOnGround && action[Mario.KEY_JUMP]))
         {
             action[Mario.KEY_JUMP] = true;
@@ -146,6 +148,18 @@ public boolean[] getAction()
     action[Mario.KEY_SPEED] =  (trueCounter % 2) == 0; 
     
     action[Mario.KEY_RIGHT] = !(enemyNear());
+    
+    if (enemyNear())
+    {
+    	action[Mario.KEY_LEFT] = true;
+    	System.out.printf("pressing left\n");
+    }
+    else
+    {
+    	action[Mario.KEY_LEFT] = false;
+    	//System.out.printf("NOT pressing left\n");
+    }
+    
     return action;
 }
 }
