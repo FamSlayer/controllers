@@ -12,6 +12,8 @@ public class OurAgent extends BasicMarioAIAgent implements Agent
 int trueJumpCounter = 0;
 int trueSpeedCounter = 0;
 int trueCounter = 0;
+boolean flee = false;
+float runAway = 0.5f;
 //private MarioEnvironment _environment;
 
 public OurAgent()
@@ -52,7 +54,7 @@ private boolean DangerOfGap(byte[][] levelScene)
         }
         if (f ||
                 getReceptiveFieldCellValue(marioCenter[0] + 1, marioCenter[1]) == 0 ||
-                (marioState[1] > 0 &&
+                (/*marioState[1] > 0 &&*/
                         (getReceptiveFieldCellValue(marioCenter[0] + 1, marioCenter[1] - 1) != 0 ||
                                 getReceptiveFieldCellValue(marioCenter[0] + 1, marioCenter[1]) != 0)))
             return true;
@@ -148,16 +150,23 @@ public boolean[] getAction()
     
   //check if Mario is able to shoot
     if(isMarioAbleToShoot){
-    	if (enemyNear())
+    	if (enemyNear() /*&& getReceptiveFieldCellValue(marioCenter[0]-2,marioCenter[0]-1)!=0*/)
         {
+    		flee = true;
+    		runAway = 0.32f; 
         	action[Mario.KEY_LEFT] = true;
         	System.out.printf("pressing left\n");
         }
         
-        else
-        {
+    	if(flee){
+        	runAway-=0.1;
+        	action[Mario.KEY_RIGHT] = false;
+        }
+        
+        if(runAway<0){
+        	flee = false;
         	action[Mario.KEY_LEFT] = false;
-        	//System.out.printf("NOT pressing left\n");
+        	action[Mario.KEY_RIGHT] = true;
         }
     }
     
